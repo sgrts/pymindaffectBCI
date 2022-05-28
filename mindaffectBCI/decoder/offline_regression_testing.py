@@ -1,5 +1,8 @@
 from joblib import PrintTime
 import numpy as np
+import git
+from pygit2 import Repository
+import datetime 
 import matplotlib.pyplot as plt
 # force random seed for reproducibility
 seed=0
@@ -104,22 +107,6 @@ def setup_lowlands():
     return dataset, dataset_args, loader_args, pipeline, cv
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 def pipeline_test(dataset:str, dataset_args:dict, loader_args:dict, pipeline, cv):
 
     loader, filenames, _ = get_dataset(dataset,**dataset_args)
@@ -168,6 +155,12 @@ def pipeline_test(dataset:str, dataset_args:dict, loader_args:dict, pipeline, cv
     string_clsfr = str(clsfr).replace('\n', '')
     string_clsfr = string_clsfr.replace(',', ';')
     string_clsfr = string_clsfr.replace('  ', '')
+
+    # get metadata
+    current_t = datetime.datetime.now()
+    repo = git.Repo(search_parent_directories=True)
+    sha = repo.head.object.hexsha
+    branch = Repository('.').head.shorthand
 
     # Get data into csv file.
     s, ave_dc = print_decoding_curve(*(average_results_per_config(res)['decoding_curve'][0]))

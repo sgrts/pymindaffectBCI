@@ -1,10 +1,10 @@
 stages:
   pipeline:
-    cmd: python FH_Pipeline2.py
+    cmd: python mindaffectBCI\decoder\offline_analysis.py
     deps:
-    - FH_Pipeline2.py
+    - mindaffectBCI\decoder\offline_analysis.py
     metrics:
-    - metrics.txt: #might need to use .json
+    - metrics.json: #might need to use .json
         cache: false
 
 
