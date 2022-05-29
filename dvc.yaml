@@ -1,0 +1,14 @@
+stages:
+  offline_regression_testing:
+    cmd: python mindaffectBCI\decoder\offline_regression_testing.py
+    deps:
+    - mindaffectBCI\decoder\offline_regression_testing.py
+    metrics:
+    - lowlands.csv:
+        cache: false
+    - plos_one.csv:
+        cache: false
+    - kaggle.csv:
+        cache: false
+    #- metadata.csv
+    #   cache: false

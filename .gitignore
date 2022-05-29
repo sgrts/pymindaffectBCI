@@ -25,3 +25,5 @@ __pycache__
 description.xml
 calibration_data*
 *.egg-info
+/plos_one.csv
+/lowlands.csv
