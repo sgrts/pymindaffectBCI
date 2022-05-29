@@ -6,7 +6,6 @@ import datetime
 import matplotlib.pyplot as plt
 # force random seed for reproducibility
 seed=0
-
 from mindaffectBCI.decoder.analyse_datasets import decoding_curve_GridSearchCV, datasets_decoding_curve_GridSearchCV, average_results_per_config, plot_decoding_curves
 from mindaffectBCI.decoder.preprocess_transforms import make_preprocess_pipeline
 from mindaffectBCI.decoder.offline.datasets import get_dataset
@@ -157,26 +156,20 @@ def pipeline_test(dataset:str, dataset_args:dict, loader_args:dict, pipeline, cv
     string_clsfr = string_clsfr.replace(',', ';')
     string_clsfr = string_clsfr.replace('  ', '')
 
-    # Get data into csv file.
-    s, ave_dc = print_decoding_curve(*(average_results_per_config(res)['decoding_curve'][0]))
-    data_int = np.transpose(np.array([filenames, [string_clsfr]*len(filenames), [str("%.3f" % x) for x in res['audc']], [str("%.3f" % ave_dc)]*len(filenames), [51.9]*len(filenames)]))
-    
-    # metadata
+    # get metadata
     current_t = datetime.datetime.now()
     repo = git.Repo(search_parent_directories=True)
     sha = repo.head.object.hexsha
     branch = Repository('.').head.shorthand
 
-    for row in data_int:
-        row.append(current_t)
-        row.append(branch)
-        row.append(sha)
-    
+    # Get data into csv file.
+    s, ave_dc = print_decoding_curve(*(average_results_per_config(res)['decoding_curve'][0]))
+    data_int = np.transpose(np.array([filenames, [string_clsfr]*len(filenames), [str("%.3f" % x) for x in res['audc']], [str("%.3f" % ave_dc)]*len(filenames), [51.9]*len(filenames)]))
     with open(name_file, 'w') as f:
         writer = csv.writer(f)
-        writer.writerow(['file', 'clsfr', 'AUDC', 'ave-AUDC', 'baseline-AUDC', 'time', 'branch', 'commit'])
+        writer.writerow(['file', 'clsfr', 'AUDC', 'ave-AUDC', 'baseline-AUDC'])
         writer.writerows(data_int)
-        
+    
 
     return res
 
@@ -215,6 +208,23 @@ def regression_test(dataset:str, dataset_args:dict, loader_args:dict, pipeline, 
         res = None
     return res
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if __name__=="__main__":
     print('------------------\n\n K A G G L E\n\n---------------------')
     dataset, dataset_args,loader_args,pipeline,cv = setup_kaggle()
@@ -246,11 +256,3 @@ if __name__=="__main__":
            StopErr  0.98  0.98  0.98  0.98  0.79  0.72  0.69  0.69   AUSC 86.4\n\
      StopThresh(P)  0.89  0.89  0.89  0.89  0.63  0.59  0.60  0.61   SSAE 14.7")
 
-    current_t = datetime.datetime.now()
-    repo = git.Repo(search_parent_directories=True)
-    sha = repo.head.object.hexsha
-    branch = Repository('.').head.shorthand
-    print('------------------\n\n M E T A D A T A\n\n---------------------')
-    print("TIME: " + current_t + "\n" + 
-            "BRANCH: " + branch + "\n" + 
-            "COMMIT: " + sha)
